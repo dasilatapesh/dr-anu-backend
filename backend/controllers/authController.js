@@ -2,7 +2,6 @@ import User from '../models/UserSchema.js'
 import Doctor from '../models/DoctorSchema.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { sendOTPViaSMS } from '../utils.js';
 
 const generateToken = user => {
     return jwt.sign({id : user._id, role : user.role}, process.env.JWT_SECRET_key,{
@@ -10,11 +9,6 @@ const generateToken = user => {
     });
 }
 
-// Function to generate OTP
-const generateOTP = () => {
-    // Generate a 6-digit OTP
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  };
 
 export const register = async(req, res) => {
     const {email, password, name, role, photo, gender} = req.body;
@@ -32,19 +26,6 @@ export const register = async(req, res) => {
             return res.status(400).json({message:'User already exist'});
         }
 
-        // Generate OTP
-        const otp = generateOTP();
-
-        // Set OTP and its expiration time in the user's document
-        user.otp = {
-            code: otp,
-            expiresAt: new Date(Date.now() + 600000), // OTP expires in 10 minutes
-        };
-
-        // Send OTP via SMS
-        sendOTPViaSMS(phone, otp);
-
-
         //hash password
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
@@ -57,7 +38,6 @@ export const register = async(req, res) => {
                 photo,
                 gender,
                 role,
-                otp: { code: otp, expiresAt: otpExpiresAt }
             });     
         }
 
@@ -69,7 +49,6 @@ export const register = async(req, res) => {
                 photo,
                 gender,
                 role,
-                otp: { code: otp, expiresAt: otpExpiresAt }
             });
         }
 
@@ -121,25 +100,3 @@ export const login = async(req, res) => {
         return res.status(500).json({status: false, message: "Failed to login!"});
     }
 };
-
-export const verifyOTP = async (req, res) => {
-    const { email, otp } = req.body;
-  
-    try {
-      let user = await User.findOne({ email });
-  
-      // Check if OTP matches and has not expired
-      if (user && user.otp && user.otp.code === otp && user.otp.expiresAt > new Date()) {
-        // Clear OTP fields
-        user.otp = undefined;
-        await user.save();
-        
-        res.status(200).json({ success: true, message: 'OTP verified successfully.' });
-      } else {
-        res.status(400).json({ success: false, message: 'Invalid OTP or OTP expired.' });
-      }
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ success: false, message: 'Internal server error. Please try again later.' });
-    }
-  };

@@ -15,10 +15,6 @@ const UserSchema = new mongoose.Schema({
   bloodType: { type: String },
   appointments: [{ type: mongoose.Types.ObjectId, ref: "Appointment" }],
 
-  otp: {
-    code: { type: String },
-    expiresAt: { type: Date },
-  },
 });
 
 export default mongoose.model("User", UserSchema);

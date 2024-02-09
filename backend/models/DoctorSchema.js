@@ -40,10 +40,6 @@ const DoctorSchema = new mongoose.Schema({
   },
   appointments: [{ type: mongoose.Types.ObjectId, ref: "Appointment" }],
 
-  otp: {
-    code: { type: String },
-    expiresAt: { type: Date },
-  },
 });
 
 export default mongoose.model("Doctor", DoctorSchema);

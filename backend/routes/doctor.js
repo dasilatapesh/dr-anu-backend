@@ -1,5 +1,5 @@
 import express from "express";
-import { updateDoctor, deleteDoctor, getAllDoctor, getSingleDoctor } from "../controllers/doctorController.js";
+import { updateDoctor, deleteDoctor, getAllDoctor, getSingleDoctor, getDoctorProfile } from "../controllers/doctorController.js";
 import { authenticate, restrict } from "../auth/verifyToken.js";
 import reviewRouter from './review.js';
 

@@ -5,7 +5,7 @@ const vonage = new Vonage({
   apiSecret: process.env.VONAGE_API_SECRET,
 });
 
-exports.sendOTPViaSMS = (phone, otp) => {
+export const sendOTPViaSMS = (phone, otp) => {
   const from = '+918126386856';
   const to = phone;
   const text = `Your OTP for verification is: ${otp}`;
