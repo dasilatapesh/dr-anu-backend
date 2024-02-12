@@ -26,6 +26,9 @@ const bookingSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    otp: {
+      type: String,
+    }
   },
   { timestamps: true }
 );

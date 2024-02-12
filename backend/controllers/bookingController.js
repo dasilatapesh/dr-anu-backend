@@ -11,20 +11,63 @@ const generateOTP = (length) => {
   };
 
 const transporter = nodemailer.createTransport({
-    service: 'EmailService', 
-    auth: {
-      user: 'email@example.com',
-      pass: 'password'
-    }
+  service: 'gmail',
+  auth: {
+      user: '@gmail.com',
+      pass: 'pass'
+  }
 });
 
 const sendOTP = async (email, otp) => {
     try {
       await transporter.sendMail({
-        from: 'email@example.com',
+        from: '"Tapesh Dasila 👻" <hellotd12@gmail.com>',
         to: email,
         subject: 'Appointment Booking OTP',
-        text: `Your OTP for appointment booking is: ${otp}`
+        html: `
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f4f4f4;
+                                padding: 20px;
+                            }
+                            .container {
+                                max-width: 600px;
+                                margin: 0 auto;
+                                background-color: lightgrey;
+                                padding: 30px;
+                                border-radius: 10px;
+                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                            }
+                            h2 {
+                                color: #333;
+                            }
+                            p {
+                                color: #666;
+                            }
+                            .otp {
+                                font-size: 14px;
+                                color: #007bff;
+                                background-color:yellow;
+                            }
+                            .footer {
+                                margin-top: 20px;
+                                color: #888;
+                                font-size: 12px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <h2>Appointment Booking</h2>
+                            <p>Dear User,</p>
+                            <p>Your One-Time Password (OTP) for appointment booking is: <span class="otp">${otp}</span></p>
+                            <p class="footer">Best regards,<br><br>Tapesh Dasila</p>
+                        </div>
+                    </body>
+                </html>`
       });
       console.log('OTP sent successfully!');
     } catch (error) {
@@ -52,7 +95,7 @@ const sendOTP = async (email, otp) => {
         
         await newBooking.save();
 
-        res.redirect(303, `/confirm/${newBooking._id}`);
+        res.status(200).json({ success: true, message: 'Otp sent successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Failed to book appointment', error: error.message });
@@ -75,6 +118,7 @@ export const verifyAppointment = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid OTP' });
         }
         booking.status = 'approved';
+        booking.otp='';
 
         await booking.save();
 
