@@ -9,9 +9,8 @@ const generateToken = user => {
     });
 }
 
-
 export const register = async(req, res) => {
-    const {email, password, name, role, photo, gender} = req.body;
+    const {email, password, name, role, photo, gender,phone} = req.body;
 
     try {
         let user = null;
@@ -26,31 +25,35 @@ export const register = async(req, res) => {
             return res.status(400).json({message:'User already exist'});
         }
 
-        //hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashPassword = await bcrypt.hash(password, salt);
-        
-        if(role==='patient'){
-            user = new User({
-                name,
-                email,
-                password: hashPassword,
-                photo,
-                gender,
-                role,
-            });     
-        }
-
-        if(role==='doctor'){
-            user = new Doctor({
-                name,
-                email,
-                password: hashPassword,
-                photo,
-                gender,
-                role,
-            });
-        }
+         //hash password
+         const salt = await bcrypt.genSalt(10);
+         const hashPassword = await bcrypt.hash(password, salt);
+         
+         if(role==='patient'){
+             user = new User({
+                 name,
+                 email,
+                 password: hashPassword,
+                 photo,
+                 gender,
+                 phone,
+                 role,
+                 otp,
+             });     
+         }
+ 
+         if(role==='doctor'){
+             user = new Doctor({
+                 name,
+                 email,
+                 password: hashPassword,
+                 photo,
+                 gender,
+                 phone,
+                 role,
+                 otp,   
+             });
+         }
 
         await user.save();
 
@@ -78,7 +81,7 @@ export const login = async(req, res) => {
 
         //check if user exist or not
         if(!user){
-            return res.status(404).json({message: "User not found!"});
+            return res.status(404).json({message: "User not found!"}); 9274
         }
 
         //compare password

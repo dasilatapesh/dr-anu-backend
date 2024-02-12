@@ -1,4 +1,4 @@
-import BookingSchema from "../models/BookingSchema.js";
+import Booking from "../models/BookingSchema.js";
 import Doctor from "../models/DoctorSchema.js";
 
 export const updateDoctor = async(req, res) => {
@@ -62,10 +62,11 @@ export const getDoctorProfile = async(req, res)=>{
         }
 
         const{password, ...rest} = doctor._doc;
-        const appointments = await Booking.find({doctor:doctorId});
+        const appointments = await Booking.find({doctor:userId});
 
         res.status(200).json({success:true, message:'Profile info is getting',data:{...rest, appointments}});
     }catch(err){
+        console.log(err);
         res.status(500).json({success:false, message:'Something went worng, cannot get'});
     }
 }

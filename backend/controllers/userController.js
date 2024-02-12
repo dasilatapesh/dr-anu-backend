@@ -1,5 +1,5 @@
 import User from "../models/UserSchema.js";
-import BookingSchema from "../models/BookingSchema.js";
+import Booking from "../models/BookingSchema.js";
 import Doctor from "../models/DoctorSchema.js";
 
 export const updateUser = async(req, res) => {
@@ -69,7 +69,7 @@ export const getMyAppointments = async(req, res)=>{
 
         //step-2 : extract doctor ids from appointment booking
 
-        const doctorIds = bookings.map(el=>el.doctor.id);
+        const doctorIds = booking.map(el=>el.doctor.id);
 
         //step-3 : retrive doctors using doctor ids
 

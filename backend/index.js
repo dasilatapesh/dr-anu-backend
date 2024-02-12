@@ -7,6 +7,7 @@ import authRoute from "./routes/auth.js";
 import userRoute from "./routes/user.js";
 import doctorRoute from "./routes/doctor.js";
 import reviewRoute from "./routes/review.js";
+import bookingRoute from './routes/booking.js';
 
 dotenv.config();
 
@@ -29,7 +30,7 @@ const connectDB = async()=>{
         await mongoose.connect(process.env.MONGO_URL);
         console.log("Connected to database :: MongoDB");
     } catch(err) {
-        console.log("Not connected to databse :: MongoDB")
+        console.log("Not connected to databse :: MongoDB",err)
     }
 }
 
@@ -41,6 +42,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/doctors', doctorRoute);
 app.use('/api/v1/reviews',reviewRoute);
+app.use('/api/v1/bookings', bookingRoute);
 
 app.listen(port,() => {
     connectDB();
