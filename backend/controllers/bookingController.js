@@ -11,17 +11,17 @@ const generateOTP = (length) => {
   };
 
 const transporter = nodemailer.createTransport({
-    service: 'YourEmailService', 
+    service: 'EmailService', 
     auth: {
-      user: 'your_email@example.com',
-      pass: 'your_email_password'
+      user: 'email@example.com',
+      pass: 'password'
     }
 });
 
 const sendOTP = async (email, otp) => {
     try {
       await transporter.sendMail({
-        from: 'your_email@example.com',
+        from: 'email@example.com',
         to: email,
         subject: 'Appointment Booking OTP',
         text: `Your OTP for appointment booking is: ${otp}`
@@ -52,9 +52,35 @@ const sendOTP = async (email, otp) => {
         
         await newBooking.save();
 
-        res.status(201).json({ success: true, message: 'Appointment booked successfully', data: newBooking });
+        res.redirect(303, `/confirm/${newBooking._id}`);
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Failed to book appointment', error: error.message });
+    }
+};
+
+
+export const verifyAppointment = async (req, res) => {
+    try {
+        const { id: bookingId } = req.params;
+        const { otp } = req.body;
+
+        const booking = await Booking.findById(bookingId);
+
+        if (!booking) {
+            return res.status(404).json({ success: false, message: 'Booking not found' });
+        }
+
+        if (booking.otp !== otp) {
+            return res.status(400).json({ success: false, message: 'Invalid OTP' });
+        }
+        booking.status = 'approved';
+
+        await booking.save();
+
+        res.status(200).json({ success: true, message: 'Appointment confirmed successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to confirm appointment', error: error.message });
     }
 };

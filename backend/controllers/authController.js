@@ -37,8 +37,7 @@ export const register = async(req, res) => {
                  photo,
                  gender,
                  phone,
-                 role,
-                 otp,
+                 role
              });     
          }
  
@@ -50,8 +49,7 @@ export const register = async(req, res) => {
                  photo,
                  gender,
                  phone,
-                 role,
-                 otp,   
+                 role
              });
          }
 
