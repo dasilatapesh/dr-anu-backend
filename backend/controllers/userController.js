@@ -63,13 +63,11 @@ export const getUserProfile = async(req, res) => {
 export const getMyAppointments = async(req, res)=>{
     try{
         //step-1 : retrive appointment from booking
-
-        const booking = await Booking.find({user:req.userId});
-
+        const booking = await Booking.find({ user: req.userId });
 
         //step-2 : extract doctor ids from appointment booking
 
-        const doctorIds = booking.map(el=>el.doctor.id);
+        const doctorIds = booking.map(el=>el.doctor._id);
 
         //step-3 : retrive doctors using doctor ids
 
@@ -78,6 +76,6 @@ export const getMyAppointments = async(req, res)=>{
         res.status(200).json({success:true, message:'Appointment are getting', data:doctors});
 
     } catch(err){
-        res.status(500).json({success:false, message:'Something went worng, cannot get'});
+        res.status(500).json({success:false, message:'Something went worng, cannot get', err});
     }
 }
