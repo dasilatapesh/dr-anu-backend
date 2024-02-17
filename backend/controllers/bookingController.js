@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 const sendOTP = async (email, otp) => {
     try {
       await transporter.sendMail({
-        from: '"Tapesh Dasila 👻" <hellotd12@gmail.com>',
+        from: '"Dr. Anuradha" <email.com>',
         to: email,
         subject: 'Appointment Booking OTP',
         html: `
