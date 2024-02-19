@@ -1,5 +1,7 @@
 import Booking from '../models/BookingSchema.js';
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv'
+dotenv.config();
 
 const generateOTP = (length) => {
     const chars = '0123456789';
@@ -13,15 +15,15 @@ const generateOTP = (length) => {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: process.env.USER_EMAIL,
-      pass: process.env.USER_PASSWORD
-  }
+      user:process.env.USER_EMAIL,
+      pass:process.env.USER_PASSWORD
+  },
 });
 
 const sendOTP = async (email, otp) => {
     try {
       await transporter.sendMail({
-        from: '"Dr. Anuradha" <email.com>',
+        from: '"Dr. Anuradha" <hellotd12@gmail.com>',
         to: email,
         subject: 'Appointment Booking OTP',
         html: `
@@ -77,25 +79,27 @@ const sendOTP = async (email, otp) => {
 
   export const bookAppointment = async (req, res) => {
     try {
-        const { doctorId, ticketPrice, appointmentDate, userEmail } = req.body;
+        const { doctorId, ticketPrice, appointmentDate, email } = req.body;
         const userId = req.userId;
 
         const otp = generateOTP(6);
 
-        await sendOTP(userEmail, otp);
+        await sendOTP(email, otp);
         
         const newBooking = new Booking({
             doctor: doctorId,
             user: userId,
             ticketPrice,
             appointmentDate,
+            email,
             otp
         });
+        console.log(newBooking);
 
         
         await newBooking.save();
 
-        res.status(200).json({ success: true, message: 'Otp sent successfully' });
+        res.status(200).json({ success: true, message: 'Otp sent successfully' , bookingId: newBooking._id });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Failed to book appointment', error: error.message });
