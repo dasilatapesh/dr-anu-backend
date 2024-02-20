@@ -15,7 +15,7 @@ export const sendMessage = async (req, res) => {
         });
 
         await transporter.sendMail({
-            from: '"Tapesh Dasila" <hellotd12@gmail.com>',
+            from: '"Dr. Anuradha" <no.reply.su12pport.1.8.4@gmail.com>',
             to: `${email}`,
             cc: process.env.USER_EMAIL,
             subject: `Thank you for your feedback: ${name}`,
